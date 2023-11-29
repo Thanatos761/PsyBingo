@@ -4,9 +4,8 @@ import de.thanatos761.frameClases.BingoFrame;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
-
 public class IDEStarter {
+    // This is the init file for the IDE, should be obvious, don't you think?
     public static void main(String[] args) {
         String idePath = "src/main/java/de/thanatos761/assets/";
         String circle = "Circle.png";
