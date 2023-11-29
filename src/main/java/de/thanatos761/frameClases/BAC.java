@@ -11,18 +11,18 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.ArrayList;
 
 public class BAC implements ActionListener {
     private JFrame bf;
-    private JFrame alertFrame;
     private JPanel pp;
     private ArrayList<Integer> buttonList = new ArrayList<>();
     private DebugLogger cl;
     private final Logger pog = new Logger();
     private final boolean isDebug = false;
-    private boolean isIDE = false;
+
+    private Image circleImg;
+    private Image bingoIma;
 
     public BAC(JFrame bf, JPanel pan) {
         this.bf = bf;
@@ -30,45 +30,27 @@ public class BAC implements ActionListener {
         cl = new DebugLogger(isDebug, "[DEBUG]",DebugLogger.DO_MEDIUM);
     }
 
-    public BAC(JFrame bingoFrame, JPanel jp, JFrame alert) {
-        this.bf = bingoFrame;
-        this.pp = jp;
-        this.alertFrame = alert;
+    public BAC(JFrame bf, JPanel pan, Image circle, Image bingo) {
+        this.bf = bf;
+        this.pp = pan;
+        this.circleImg = circle;
+        this.bingoIma = bingo;
+        cl = new DebugLogger(isDebug, "[DEBUG]",DebugLogger.DO_MEDIUM);
     }
-
-    public void setIsIDE(boolean x) {
-        this.isIDE = x;
-    }
-
-    private final String ideAssets = "src/main/java/de/thanatos761/assets/";
-    private final String normalAssets = "assets/";
-    private String assets;
-    private File iconFile;
-    private File bingoFile;
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        assets = isIDE ? ideAssets : normalAssets;
-        iconFile = new File(assets + "Circle.png");
-        bingoFile = new File(assets + "Bingo.png");
-        String icoF = iconFile.getAbsolutePath();
         if(e.getSource().getClass() == JButton.class) { //if the source is a JButton it will fire up the response linked to the JButton
             JButton object = (JButton) e.getSource();
             if(object.getName().equalsIgnoreCase("restart")) {
-                //bf.dispose();
-                //bf = new BingoFrame(bf.getTitle(),bf.getWidth(), bf.getHeight());
                 restartBingo(bf,pp);
             } else {
                 int width = object.getWidth();
                 int height = object.getHeight();
 
+                Image im = circleImg.getScaledInstance(width, height, Image.SCALE_FAST);
+                ImageIcon ico = new ImageIcon(im);
                 //get image
-                //TODO: add fail check
-                ImageIcon ico = new ImageIcon(icoF);
-                Image im = ico.getImage();
-                Image im2 = im.getScaledInstance(width,height,2);
-                ico = new ImageIcon(im2);
-
                 //put icon instead of text + disable button
                 object.setText("");
                 object.setIcon(ico);
@@ -109,7 +91,7 @@ public class BAC implements ActionListener {
         buttonList.clear();
 
         // get an array with utf8 conforming ole proverbs
-        String[] ole = new Ole().getOleBingoUTF8();
+        String[] ole = new Ole().getOleBingo();
         // generate a 16 index list with the integers 0 to 16
         ArrayList<Integer> rnd = new RandomGenerator(16, 0, 15).getIntList();
         JButton jb;
@@ -126,10 +108,10 @@ public class BAC implements ActionListener {
         p.removeAll();
         buttonList.clear();
         JLabel bingoImg = new JLabel();
+        ImageIcon b = new ImageIcon(bingoIma);
         JButton restartB = new JButton("Restart");
         restartB.setName("restart");
         restartB.addActionListener(this::actionPerformed);
-        ImageIcon b = new ImageIcon(bingoFile.getAbsolutePath());
         bingoImg.setIcon(b);
 
         p.add(bingoImg);
